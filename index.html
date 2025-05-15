@@ -4,104 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>今日の運勢くじ</title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Google Sans', sans-serif;
+            /* Sawarabi Mincho フォントのみを使用し、フォールバックを指定 */
+            font-family: 'Sawarabi Mincho', serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.8; /* 行間を広げて読みやすく */
+        }
+        h1, h2 {
+             /* Sawarabi Mincho フォントのみを使用 */
+             font-family: 'Sawarabi Mincho', serif;
+             color: var(--text-color);
         }
         .kuji-result {
             display: none;
+            /* おみくじの紙をイメージしたスタイル */
+            background-color: var(--result-background-color, #fff); /* 結果表示の背景色 */
+            color: var(--result-text-color, #000); /* 結果表示の文字色 */
+            border: 3px solid var(--result-border-color, #f0e68c); /* 金色の縁 */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            padding: 24px; /* パディングを調整 */
+            margin-bottom: 32px; /* マージンを調整 */
+            max-width: 360px; /* 最大幅を少し狭く */
+            width: 90%; /* レスポンシブ対応 */
+            border-radius: 12px; /* 角を丸く */
+            text-align: center;
         }
         .description-box {
             display: none;
+            background-color: var(--description-background-color, #fff); /* 説明表示の背景色 */
+            color: var(--description-text-color, #000); /* 説明表示の文字色 */
+            border: 3px solid var(--description-border-color, #90ee90); /* 薄緑色の縁 */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 32px;
+            max-width: 400px;
+            width: 90%;
+            border-radius: 12px;
+            text-align: left; /* 説明は左寄せに */
         }
         .button-animation {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .button-animation:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-        }
-        .fade-in {
-            animation: fadeIn 1s ease forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        /* Define CSS variables for theming */
-        :root {
-            --background-color: #ffffff; /* ライトモードの背景色 */
-            --text-color: #000000; /* ライトモードの文字色 */
-            --button-color: #e5e7eb; /* ライトモードのボタン色 (gray-200) */
-            --button-text-color: #000000; /* ライトモードのボタン文字色 */
-        }
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-        .kuji-result, .description-box {
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-        h1, h2 {
-            color: var(--text-color);
-        }
-        .button-animation {
+            /* ボタンのスタイルを調整 */
+            font-weight: bold;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background-color: var(--button-color);
             color: var(--button-text-color);
         }
         .button-animation:hover {
-            background-color: #d4d4d8; /* ホバー時のボタン色 (gray-300) */
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+         @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* CSS Variables for theming */
+        :root {
+            --background-color: #f8f8f8; /* 明るい背景色 */
+            --text-color: #333; /* 標準の文字色 */
+            --button-color: #eee; /* ボタンの背景色 */
+            --button-text-color: #333; /* ボタンの文字色 */
+
+            --result-background-color: #fff;
+            --result-text-color: #c0392b; /* 結果の文字色（赤系） */
+            --result-border-color: #f1c40f; /* 結果の枠線色（金系） */
+
+            --description-background-color: #fff;
+            --description-text-color: #2c3e50; /* 説明の文字色（濃い青系） */
+            --description-border-color: #27ae60; /* 説明の枠線色（緑系） */
+        }
+
+        /* Dark mode adjustments */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --button-color: #333;
+                --button-text-color: #e0e0e0;
+
+                --result-background-color: #2c3e50; /* ダークモードでの結果表示背景 */
+                --result-text-color: #e74c3c; /* ダークモードでの結果表示文字色 */
+                --result-border-color: #f39c12; /* ダークモードでの結果表示枠線色 */
+
+                --description-background-color: #34495e; /* ダークモードでの説明表示背景 */
+                --description-text-color: #bdc3c7; /* ダークモードでの説明表示文字色 */
+                --description-border-color: #2ecc71; /* ダークモードでの説明表示枠線色 */
+            }
+        }
+
+        /* くじ結果の文字色を運勢に合わせて変更するクラス */
+        .result-大吉 { color: var(--result-text-color, #c0392b); } /* 明るい赤 */
+        .result-中吉 { color: var(--result-text-color, #e67e22); } /* オレンジ */
+        .result-小吉 { color: var(--result-text-color, #f1c40f); } /* 黄色 */
+        .result-吉 { color: var(--result-text-color, #2ecc71); } /* 緑 */
+        .result-半吉 { color: var(--result-text-color, #3498db); } /* 青 */
+        .result-末吉 { color: var(--result-text-color, #9b59b6); } /* 紫 */
+        .result-末小吉 { color: var(--result-text-color, #e84393); } /* ピンク */
+        .result-凶 { color: var(--result-text-color, #7f8c8d); } /* グレー */
+        .result-小凶 { color: var(--result-text-color, #c0392b); } /* 赤 */
+        .result-半凶 { color: var(--result-text-color, #d35400); } /* 濃いオレンジ */
+        .result-末凶 { color: var(--result-text-color, #e74c3c); } /* 濃い赤 */
+        .result-大凶 { color: var(--result-text-color, #000000); } /* 黒 */
+
     </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'kuji-red': '#FF4500',
-                        'kuji-blue': '#4169E1',
-                        'kuji-yellow': '#FFD700',
-                        'kuji-green': '#3CB371',
-                        'kuji-purple': '#800080',
-                        'kuji-pink': '#FF69B4',
+                        // Tailwindのデフォルト色を使用するか、上記のCSS変数で調整
                     },
                 },
             },
         }
     </script>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-start pt-12">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-kuji-red mb-8 text-center tracking-wider drop-shadow-lg">
+<body class="min-h-screen flex flex-col items-center justify-start pt-12 px-4">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-center tracking-wider drop-shadow-lg" style="color: var(--text-color);">
         今日の運勢
     </h1>
+     <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 text-center tracking-wider drop-shadow-lg" style="color: var(--text-color);">
+        おみくじ
+    </h1>
 
-    <div id="kuji-result" class="kuji-result bg-white rounded-2xl shadow-xl p-6 text-center mb-8 max-w-md w-full border-2 border-kuji-yellow">
-        <h2 class="text-2xl sm:text-3xl font-semibold text-kuji-blue mb-4 fade-in">今日の運勢は...</h2>
-        <p id="result-text" class="text-xl sm:text-2xl font-bold text-kuji-red fade-in"></p>
+    <div id="kuji-result" class="kuji-result">
+        <h2 class="text-2xl sm:text-3xl font-semibold mb-4 fade-in" style="color: var(--result-text-color);">今日の運勢は...</h2>
+        <p id="result-text" class="text-xl sm:text-2xl font-bold fade-in"></p>
     </div>
 
-    <div id="description-box" class="description-box bg-white rounded-2xl shadow-xl p-6 text-center mb-8 max-w-md w-full border-2 border-kuji-green">
-        <h2 class="text-2xl sm:text-3xl font-semibold text-kuji-green mb-4 fade-in">くじの説明</h2>
-        <div id="description-content" class="text-lg sm:text-xl text-gray-700 fade-in text-left">
+    <div id="description-box" class="description-box">
+        <h2 id="description-title" class="text-2xl sm:text-3xl font-semibold mb-4 fade-in" style="color: var(--description-text-color);"></h2>
+        <div id="description-content" class="text-lg sm:text-xl fade-in text-left space-y-3">
         </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-        <button id="draw-kuji" class="button-animation bg-kuji-red hover:bg-red-600 text-white font-bold rounded-xl py-3 px-6 text-lg shadow-md">
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8 w-full max-w-md">
+        <button id="draw-kuji" class="button-animation flex-1" style="background-color: var(--button-color); color: var(--button-text-color);">
             くじを引く
         </button>
-        <button id="show-description" class="button-animation bg-kuji-blue hover:bg-blue-600 text-white font-bold rounded-xl py-3 px-6 text-lg shadow-md">
+        <button id="show-description" class="button-animation flex-1" style="background-color: var(--button-color); color: var(--button-text-color);">
             くじの説明
         </button>
-        <button id="show-about" class="button-animation bg-kuji-green hover:bg-green-600 text-white font-bold rounded-xl py-3 px-6 text-lg shadow-md">
+        <button id="show-about" class="button-animation flex-1" style="background-color: var(--button-color); color: var(--button-text-color);">
             結果について
         </button>
     </div>
 
-    <p class="text-md sm:text-lg text-gray-600 text-center max-w-xl">
+    <p class="text-md sm:text-lg text-gray-600 text-center max-w-xl px-4">
         ※このくじは、何度でも引けますが、今日の運勢くじなので、1回目の結果を参考にしてください。それ以降は、参考にはしないでください。
     </p>
 
@@ -133,42 +192,49 @@
         const kujiResultElement = document.getElementById("kuji-result");
         const drawKujiButton = document.getElementById("draw-kuji");
         const descriptionBox = document.getElementById("description-box");
+        const descriptionTitle = document.getElementById("description-title");
         const descriptionContent = document.getElementById("description-content");
         const showDescriptionButton = document.getElementById("show-description");
         const showAboutButton = document.getElementById("show-about");
 
-        // Define a function to update the background color
-        function updateBackgroundColor() {
+        // Function to update the background color and other theme-related styles
+        function updateTheme() {
             // Check if the user prefers dark mode
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                // Set dark mode colors
-                document.documentElement.style.setProperty('--background-color', '#000000');
-                document.documentElement.style.setProperty('--text-color', '#ffffff');
-                document.documentElement.style.setProperty('--button-color', '#4a5568');
-                document.documentElement.style.setProperty('--button-text-color', '#ffffff');
+                // Apply dark mode styles
+                document.documentElement.style.setProperty('--background-color', '#1a1a1a');
+                document.documentElement.style.setProperty('--text-color', '#e0e0e0');
+                document.documentElement.style.setProperty('--button-color', '#333');
+                document.documentElement.style.setProperty('--button-text-color', '#e0e0e0');
+
+                document.documentElement.style.setProperty('--result-background-color', '#2c3e50');
+                document.documentElement.style.setProperty('--result-text-color', '#e74c3c');
+                document.documentElement.style.setProperty('--result-border-color', '#f39c12');
+
+                document.documentElement.style.setProperty('--description-background-color', '#34495e');
+                document.documentElement.style.setProperty('--description-text-color', '#bdc3c7');
+                document.documentElement.style.setProperty('--description-border-color', '#2ecc71');
+
             } else {
-                // Set light mode colors
-                document.documentElement.style.setProperty('--background-color', '#ffffff');
-                document.documentElement.style.setProperty('--text-color', '#000000');
-                document.documentElement.style.setProperty('--button-color', '#e5e7eb');
-                document.documentElement.style.setProperty('--button-text-color', '#000000');
+                // Apply light mode styles
+                document.documentElement.style.setProperty('--background-color', '#f8f8f8');
+                document.documentElement.style.setProperty('--text-color', '#333');
+                document.documentElement.style.setProperty('--button-color', '#eee');
+                document.documentElement.style.setProperty('--button-text-color', '#333');
+
+                document.documentElement.style.setProperty('--result-background-color', '#fff');
+                document.documentElement.style.setProperty('--result-text-color', '#c0392b');
+                document.documentElement.style.setProperty('--result-border-color', '#f1c40f');
+
+                document.documentElement.style.setProperty('--description-background-color', '#fff');
+                document.documentElement.style.setProperty('--description-text-color', '#2c3e50');
+                document.documentElement.style.setProperty('--description-border-color', '#27ae60');
             }
-            // Apply the CSS variables to the styles
-            document.documentElement.style.setProperty('--button-hover-color', getButtonHoverColor());
+             // Update button styles based on current theme variables
             updateButtonStyles();
         }
 
-        // Function to determine button hover color based on current button color
-        function getButtonHoverColor() {
-            const buttonColor = getComputedStyle(document.documentElement).getPropertyValue('--button-color').trim();
-            if (buttonColor === '#4a5568') {
-                return '#718096';
-            } else {
-                return '#d4d4d8';
-            }
-        }
-
-        // Function to update button styles
+         // Function to update button styles
         function updateButtonStyles() {
             const buttons = document.querySelectorAll('.button-animation');
             buttons.forEach(button => {
@@ -178,45 +244,90 @@
         }
 
         // Call the function on initial load
-        updateBackgroundColor();
+        updateTheme();
 
         // Listen for changes in the user's color scheme preference
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateBackgroundColor);
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
 
 
         function drawKuji() {
+            // Hide description box if open
+            descriptionBox.style.display = "none";
+            descriptionContent.innerHTML = "";
+            descriptionTitle.textContent = "";
+
+
             const randomIndex = Math.floor(Math.random() * results.length);
             const result = results[randomIndex];
+            const description = descriptions[randomIndex];
+
+            // Remove previous result class
+            resultElement.className = ''; // Clear all classes
+
+            // Add class based on result for specific styling
+            resultElement.classList.add(`result-${result}`);
             resultElement.textContent = result;
+
+            // Show result box with fade-in animation
+            kujiResultElement.classList.remove("fade-in"); // Remove to re-add and trigger animation
+            void kujiResultElement.offsetWidth; // Trigger reflow
             kujiResultElement.classList.add("fade-in", "block");
             kujiResultElement.style.display = "block";
 
+            // Optional: Display description automatically after drawing
+            // setTimeout(() => {
+            //     descriptionTitle.textContent = `${result} の説明`;
+            //     descriptionContent.textContent = description;
+            //     descriptionBox.classList.remove("fade-in");
+            //     void descriptionBox.offsetWidth;
+            //     descriptionBox.classList.add("fade-in", "block");
+            //     descriptionBox.style.display = "block";
+            // }, 1500); // Show description after 1.5 seconds
         }
 
         function showDescription() {
-            if (descriptionBox.style.display === "block") {
+             // Hide result box if open
+            kujiResultElement.style.display = "none";
+            resultElement.textContent = "";
+            resultElement.className = '';
+
+            if (descriptionBox.style.display === "block" && descriptionTitle.textContent === "くじの説明") {
                 descriptionBox.style.display = "none";
                 descriptionContent.innerHTML = "";
+                descriptionTitle.textContent = "";
             } else {
-                descriptionBox.style.display = "block";
+                descriptionTitle.textContent = "くじの説明";
                 let descriptionText = "<ul class='list-disc list-inside space-y-2'>";
                 results.forEach((result, index) => {
                     descriptionText += `<li><span class="font-semibold">${result}</span>：${descriptions[index]}</li>`;
                 });
                 descriptionText += "</ul>";
                 descriptionContent.innerHTML = descriptionText;
-                descriptionBox.classList.add("fade-in");
+
+                descriptionBox.classList.remove("fade-in");
+                void descriptionBox.offsetWidth;
+                descriptionBox.classList.add("fade-in", "block");
+                descriptionBox.style.display = "block";
             }
         }
 
         function showAbout() {
-            if (descriptionBox.style.display === "block") {
+             // Hide result box if open
+            kujiResultElement.style.display = "none";
+            resultElement.textContent = "";
+            resultElement.className = '';
+
+            if (descriptionBox.style.display === "block" && descriptionTitle.textContent === "結果について") {
                 descriptionBox.style.display = "none";
                 descriptionContent.innerHTML = "";
+                descriptionTitle.textContent = "";
             } else {
+                descriptionTitle.textContent = "結果について";
+                descriptionContent.innerHTML = `<p>${aboutText.replace(/\n/g, '<br>')}</p>`; // 改行を反映
+                descriptionBox.classList.remove("fade-in");
+                void descriptionBox.offsetWidth;
+                descriptionBox.classList.add("fade-in", "block");
                 descriptionBox.style.display = "block";
-                descriptionContent.textContent = aboutText;
-                descriptionBox.classList.add("fade-in");
             }
         }
 
